@@ -1,6 +1,21 @@
 import React from "react";
 
 export default async function Comments({ postSlug }: { postSlug: string }) {
+  const WEBSITE_URL = "http://localhost:3000";
+
+  let comments = [];
+
+  try {
+    const commentsResult = await fetch(
+      `${WEBSITE_URL}/api/comments/${postSlug}`,
+      { next: { revalidate: 5 } }
+    );
+    const response = await commentsResult.json();
+    comments = response.comments.rows;
+  } catch (err) {
+    console.log(err);
+  }
+
   return (
     <div>
       <h2>| Comments |</h2>
@@ -19,6 +34,16 @@ export default async function Comments({ postSlug }: { postSlug: string }) {
 
         <button type="submit">Send comment</button>
       </form>
+      {/* @ts-ignore */}
+      {comments.map((comment) => {
+        return (
+          <li key={comment.id}>
+            {comment.username} says...
+            <br />
+            {comment.content}
+          </li>
+        );
+      })}
     </div>
   );
 }

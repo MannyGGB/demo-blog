@@ -1,5 +1,5 @@
 import { sql } from "@vercel/postgres";
-import short from "short-uuid"; //universal unique identifier to create unique ids for our comments
+import short from "short-uuid";
 
 export async function saveComment(
   username: string,
@@ -7,6 +7,7 @@ export async function saveComment(
   slug: string
 ) {
   const uuid = short.generate();
+
   await sql`INSERT INTO comments (id, slug, username, content) VALUES (${uuid}, ${slug}, ${username}, ${content})`;
 
   return uuid;
